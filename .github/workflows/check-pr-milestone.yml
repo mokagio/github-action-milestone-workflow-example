@@ -1,0 +1,29 @@
+name: Check PR Milestone 🏷
+on:
+  # Only the issue resource has milestone lifecycle events (milestoned and
+  # demilestoned). GitHub treats pull requests as special issues, so changing
+  # the milestone of a PR will trigger an issues.milestone or .demilestoned
+  # event.
+  #
+  # See:
+  # - https://help.github.com/en/actions/reference/events-that-trigger-workflows#pull-request-event-pull_request
+  # - https://help.github.com/en/actions/reference/events-that-trigger-workflows#issues-event-issues
+  issues:
+    types: [milestoned, demilestoned]
+  # We also want our check of the milestone to run when a PR is created
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  echo:
+    runs-on: ubuntu-16.04
+    if:
+      # Because we are intereset only in changes in milestones happening on a PR, let's use filter for events originated from PRs, not issues.
+      #
+      # Depending on the event that triggered the workflow run, the GitHub
+      # context will have different shapes; we need to account for all of
+      # them.
+      github.event.pull_request != null || github.event.issue.pull_request != null
+    steps:
+      - name: Say Hello
+        run: echo "Hello"
