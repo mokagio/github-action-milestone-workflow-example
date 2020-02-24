@@ -53,3 +53,13 @@ jobs:
             --dangerfile Automattic/peril-settings/org/pr/milestone.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # This job dumps the event that triggered the build from the GitHub context
+  # so that we can inspect it to verify the setup.
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub event
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
+        run: echo "$GITHUB_EVENT"
